@@ -1,0 +1,35 @@
+name: build
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  win:
+    runs-on: windows-latest
+    env:
+      VER: ${{ github.event.inputs.version || '0.1.0' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Publish app
+        shell: pwsh
+        run: dotnet publish src/DorfiksQemuGui/DorfiksQemuGui.csproj -c Release -r win-x64 -p:Platform=x64 -o publish
+      - name: EXE installer (Inno Setup)
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DAppVersion=$env:VER" installer\setup.iss
+      - name: MSI installer (WiX)
+        shell: pwsh
+        run: |
+          dotnet tool install --global wix --version 5.0.2
+          New-Item -ItemType Directory -Force dist | Out-Null
+          wix build installer\product.wxs -d Version=$env:VER -arch x64 -o "dist\DorfiksQemuGui-$env:VER.msi"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installers
+          path: dist/*

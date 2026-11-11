@@ -1,0 +1,13 @@
+<Page x:Class="DorfiksQemuGui.Views.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Padding="32,24" Spacing="16" MaxWidth="720" HorizontalAlignment="Left">
+        <TextBlock Text="Settings" Style="{StaticResource TitleTextBlockStyle}"/>
+        <ToggleSwitch x:Name="AutoInstall" Header="Install QEMU automatically if it is missing" Toggled="AutoInstall_Toggled"/>
+        <TextBox x:Name="QemuDir" Header="QEMU folder" LostFocus="QemuDir_LostFocus"/>
+        <TextBlock x:Name="Status" Opacity="0.7"/>
+        <Button Content="Download / reinstall QEMU" Click="Reinstall_Click"/>
+        <TextBlock Opacity="0.6" TextWrapping="Wrap"
+                   Text="Dorfik's GUI for QEMU is a front-end for QEMU (GPL-2.0). QEMU is downloaded from the official Windows builds at qemu.weilnetz.de."/>
+    </StackPanel>
+</Page>

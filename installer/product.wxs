@@ -1,0 +1,19 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="Dorfik's GUI for QEMU" Manufacturer="Dorfik" Version="$(Version)"
+           UpgradeCode="3E7A9C52-5D4B-4C66-8E10-7A1F2B9D6C34" Scope="perMachine">
+    <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="Dorfiks GUI for QEMU">
+        <Files Include="..\publish\**" />
+      </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Component Id="StartMenuShortcut" Guid="B2C5D8E1-91A7-4F3C-A6D2-0E4B7C8F1A59">
+        <Shortcut Id="AppShortcut" Name="Dorfik's GUI for QEMU"
+                  Target="[INSTALLFOLDER]DorfiksQemuGui.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKCU" Key="Software\DorfiksQemuGui" Name="shortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+  </Package>
+</Wix>
