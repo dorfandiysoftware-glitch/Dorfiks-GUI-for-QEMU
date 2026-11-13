@@ -16,6 +16,7 @@ public sealed partial class MainWindow : Window
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1100, 720));
         Nav.SelectedItem = Nav.MenuItems[0];
         WhpxBar.IsOpen = !Whpx.IsAvailable();
+        if (WhpxBar.IsOpen && Whpx.Diagnostic.Length > 0) WhpxBar.Message += " (" + Whpx.Diagnostic + ")";
         _ = EnsureQemuAsync();
     }
 

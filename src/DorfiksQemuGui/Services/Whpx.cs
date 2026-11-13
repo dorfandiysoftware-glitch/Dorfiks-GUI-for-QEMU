@@ -11,6 +11,9 @@ public static class Whpx
 
     private static bool? _cached;
 
+    /// <summary>Why the last check failed, shown to the user.</summary>
+    public static string Diagnostic { get; private set; } = "";
+
     public static bool IsAvailable(bool refresh = false)
     {
         if (!refresh && _cached is bool c) return c;
@@ -19,8 +22,9 @@ public static class Whpx
             // WHvCapabilityCodeHypervisorPresent = 0
             var hr = WHvGetCapability(0, out var present, 4, out _);
             _cached = hr >= 0 && present != 0;
+            Diagnostic = _cached.Value ? "" : $"WHvGetCapability hr=0x{hr:X8}, hypervisor present={present}";
         }
-        catch (Exception) { _cached = false; } // DLL missing => feature is off
+        catch (Exception ex) { _cached = false; Diagnostic = "WinHvPlatform.dll not available (" + ex.GetType().Name + ")"; }
         return _cached.Value;
     }
 
@@ -30,7 +34,9 @@ public static class Whpx
         try
         {
             var psi = new ProcessStartInfo("powershell.exe",
-                "-NoProfile -Command \"Enable-WindowsOptionalFeature -Online -FeatureName HypervisorPlatform -All -NoRestart\"")
+                "-NoProfile -Command \"Enable-WindowsOptionalFeature -Online -FeatureName HypervisorPlatform -All -NoRestart | Out-Null; " +
+                "Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -All -NoRestart | Out-Null; " +
+                "bcdedit /set hypervisorlaunchtype auto\"")
             { UseShellExecute = true, Verb = "runas", WindowStyle = ProcessWindowStyle.Hidden };
             using var p = Process.Start(psi);
             if (p == null) return false;
