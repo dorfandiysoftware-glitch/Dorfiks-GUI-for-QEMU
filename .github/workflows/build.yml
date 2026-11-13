@@ -27,8 +27,9 @@ jobs:
         shell: pwsh
         run: |
           dotnet tool install --global wix --version 5.0.2
+          wix extension add -g WixToolset.UI.wixext/5.0.2
           New-Item -ItemType Directory -Force dist | Out-Null
-          wix build installer\product.wxs -d Version=$env:VER -arch x64 -o "dist\DorfiksQemuGui-$env:VER.msi"
+          wix build -ext WixToolset.UI.wixext installer\product.wxs -d Version=$env:VER -arch x64 -o "dist\DorfiksQemuGui-$env:VER.msi"
       - uses: actions/upload-artifact@v4
         with:
           name: installers

@@ -1,8 +1,9 @@
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
   <Package Name="Dorfik's GUI for QEMU" Manufacturer="Dorfik" Version="$(Version)"
            UpgradeCode="3E7A9C52-5D4B-4C66-8E10-7A1F2B9D6C34" Scope="perMachine">
     <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
     <MediaTemplate EmbedCab="yes" />
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
     <StandardDirectory Id="ProgramFiles64Folder">
       <Directory Id="INSTALLFOLDER" Name="Dorfiks GUI for QEMU">
         <Files Include="..\publish\**" />
