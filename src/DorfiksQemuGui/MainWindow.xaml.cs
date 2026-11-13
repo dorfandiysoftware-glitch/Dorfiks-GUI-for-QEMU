@@ -16,7 +16,16 @@ public sealed partial class MainWindow : Window
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1100, 720));
         Nav.SelectedItem = Nav.MenuItems[0];
         WhpxBar.IsOpen = !Whpx.IsAvailable();
-        if (WhpxBar.IsOpen && Whpx.Diagnostic.Length > 0) WhpxBar.Message += " (" + Whpx.Diagnostic + ")";
+        if (WhpxBar.IsOpen && Whpx.FeatureInstalled)
+        {
+            // The feature is on but Windows reports no usable hypervisor platform: nothing to enable.
+            WhpxBar.Severity = InfoBarSeverity.Informational;
+            WhpxBar.Title = "Hardware acceleration is not available";
+            WhpxBar.Message = "Windows Hypervisor Platform reports no usable hypervisor on this PC (" + Whpx.Diagnostic +
+                "). Virtual machines will use slower software emulation. If you just changed Windows features, restart; " +
+                "otherwise the CPU or Windows build may not support it.";
+            WhpxButton.Visibility = Visibility.Collapsed;
+        }
         _ = EnsureQemuAsync();
     }
 

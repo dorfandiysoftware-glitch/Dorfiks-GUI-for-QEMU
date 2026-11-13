@@ -26,7 +26,7 @@ public static class QemuLauncher
         {
             $"-name \"{vm.Name}\"",
             "-machine q35",
-            vm.UseWhpx && Whpx.IsAvailable() ? "-accel whpx,kernel-irqchip=off -accel tcg" : "-accel tcg,thread=multi",
+            vm.UseWhpx && Whpx.IsAvailable() ? "-accel whpx,kernel-irqchip=off -accel tcg" : "-accel tcg,thread=multi,tb-size=1024",
             "-cpu max",
             $"-smp {vm.Cores}",
             $"-m {vm.RamMb}",

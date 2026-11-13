@@ -11,6 +11,9 @@ public static class Whpx
 
     private static bool? _cached;
 
+    /// <summary>True when the platform DLL is present (the Windows feature is installed).</summary>
+    public static bool FeatureInstalled { get; private set; }
+
     /// <summary>Why the last check failed, shown to the user.</summary>
     public static string Diagnostic { get; private set; } = "";
 
@@ -20,11 +23,12 @@ public static class Whpx
         try
         {
             // WHvCapabilityCodeHypervisorPresent = 0
+            FeatureInstalled = true;
             var hr = WHvGetCapability(0, out var present, 4, out _);
             _cached = hr >= 0 && present != 0;
             Diagnostic = _cached.Value ? "" : $"WHvGetCapability hr=0x{hr:X8}, hypervisor present={present}";
         }
-        catch (Exception ex) { _cached = false; Diagnostic = "WinHvPlatform.dll not available (" + ex.GetType().Name + ")"; }
+        catch (Exception ex) { _cached = false; FeatureInstalled = !(ex is DllNotFoundException); Diagnostic = "WinHvPlatform.dll not available (" + ex.GetType().Name + ")"; }
         return _cached.Value;
     }
 
