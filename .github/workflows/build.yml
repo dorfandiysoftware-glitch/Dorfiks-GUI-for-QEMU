@@ -18,7 +18,13 @@ jobs:
       - name: Publish app
         shell: pwsh
         run: dotnet publish src/DorfiksQemuGui/DorfiksQemuGui.csproj -c Release -r win-x64 -p:Platform=x64 -o publish
-      - name: EXE installer (Inno Setup)
+      - name: Publish WinUI installer
+        shell: pwsh
+        run: |
+          dotnet publish src/DorfiksSetup/DorfiksSetup.csproj -c Release -r win-x64 -p:Platform=x64 "-p:Version=$env:VER" -o setup_publish
+          New-Item -ItemType Directory -Force setup_publish\payload | Out-Null
+          Copy-Item publish\* setup_publish\payload -Recurse -Force
+      - name: EXE installer (Inno Setup wrapper)
         shell: pwsh
         run: |
           choco install innosetup -y --no-progress
@@ -30,6 +36,7 @@ jobs:
           wix extension add -g WixToolset.UI.wixext/5.0.2
           New-Item -ItemType Directory -Force dist | Out-Null
           wix build -ext WixToolset.UI.wixext installer\product.wxs -d Version=$env:VER -arch x64 -o "dist\DorfiksQemuGui-$env:VER.msi"
+          Remove-Item dist\*.wixpdb -ErrorAction SilentlyContinue
       - uses: actions/upload-artifact@v4
         with:
           name: installers
