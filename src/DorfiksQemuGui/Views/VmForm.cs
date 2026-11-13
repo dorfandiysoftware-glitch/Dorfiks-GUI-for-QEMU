@@ -92,7 +92,7 @@ public sealed class VmForm
         Extra.Text = vm.ExtraArgs; OsId = vm.OsId; Group = vm.Group;
         // New machines: prefer VirtualBox when it is installed and QEMU has no hardware acceleration here.
         EngineId = vm.Engine;
-        if (string.IsNullOrEmpty(vm.OsId) && !Whpx.IsAvailable() && Engine.ById("virtualbox").Installed) EngineId = "virtualbox";
+        if (string.IsNullOrEmpty(vm.OsId) && !Services.Whpx.IsAvailable() && Engine.ById("virtualbox").Installed) EngineId = "virtualbox";
         Ram.ValueChanged += (_, _) => UpdateLabels();
         Cores.ValueChanged += (_, _) => UpdateLabels();
         Disk.ValueChanged += (_, _) => UpdateLabels();
