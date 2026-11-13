@@ -13,6 +13,10 @@ public sealed partial class MainWindow : Window
         InitializeComponent();
         Title = "Dorfik's GUI for QEMU";
         try { SystemBackdrop = new MicaBackdrop(); } catch { }
+        ExtendsContentIntoTitleBar = true;
+        SetTitleBar(AppTitleBar);
+        AppWindow.TitleBar.ButtonBackgroundColor = Microsoft.UI.Colors.Transparent;
+        AppWindow.TitleBar.ButtonInactiveBackgroundColor = Microsoft.UI.Colors.Transparent;
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1100, 720));
         Nav.SelectedItem = Nav.MenuItems[0];
         WhpxBar.IsOpen = !Whpx.IsAvailable();

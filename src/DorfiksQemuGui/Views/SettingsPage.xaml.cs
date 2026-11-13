@@ -13,6 +13,7 @@ public sealed partial class SettingsPage : Page
         InitializeComponent();
         AutoInstall.IsOn = AppSettings.Current.AutoInstallQemu;
         QemuDir.Text = QemuLocator.Find() ?? AppSettings.Current.QemuDir;
+        DisksDir.Text = VmStore.DisksDir;
         UpdateStatus();
         loading = false;
     }
@@ -32,6 +33,24 @@ public sealed partial class SettingsPage : Page
         AppSettings.Current.QemuDir = QemuDir.Text.Trim();
         AppSettings.Current.Save();
         UpdateStatus();
+    }
+
+    void DisksDir_LostFocus(object sender, RoutedEventArgs e)
+    {
+        var t = DisksDir.Text.Trim();
+        AppSettings.Current.DisksFolder = string.Equals(t, VmStore.DefaultDisksDir, StringComparison.OrdinalIgnoreCase) ? "" : t;
+        AppSettings.Current.Save();
+    }
+
+    async void BrowseDisks_Click(object sender, RoutedEventArgs e)
+    {
+        var picker = new Windows.Storage.Pickers.FolderPicker();
+        picker.FileTypeFilter.Add("*");
+        WinRT.Interop.InitializeWithWindow.Initialize(picker, WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow));
+        var f = await picker.PickSingleFolderAsync();
+        if (f == null) return;
+        DisksDir.Text = f.Path;
+        DisksDir_LostFocus(sender, e);
     }
 
     async void Reinstall_Click(object sender, RoutedEventArgs e)

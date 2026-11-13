@@ -10,7 +10,9 @@ public static class QemuLauncher
         if (string.IsNullOrWhiteSpace(vm.DiskPath))
         {
             Directory.CreateDirectory(VmStore.DisksDir);
-            vm.DiskPath = Path.Combine(VmStore.DisksDir, vm.Id + ".qcow2");
+            var safe = string.Concat(vm.Name.Where(c => !Path.GetInvalidFileNameChars().Contains(c))).Trim();
+            if (safe.Length == 0) safe = "machine";
+            vm.DiskPath = Path.Combine(VmStore.DisksDir, $"{safe}-{vm.Id[..6]}.qcow2");
         }
         if (File.Exists(vm.DiskPath)) return;
         var psi = new ProcessStartInfo(Path.Combine(qemuDir, "qemu-img.exe"),

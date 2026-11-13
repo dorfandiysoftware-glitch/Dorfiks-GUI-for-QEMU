@@ -15,7 +15,7 @@ SolidCompression=yes
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 PrivilegesRequired=admin
-WizardStyle=modern
+WizardStyle=modern dynamic
 UninstallDisplayIcon={app}\DorfiksQemuGui.exe
 
 [Files]

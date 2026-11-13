@@ -5,6 +5,12 @@
         <TextBlock Text="Settings" Style="{StaticResource TitleTextBlockStyle}"/>
         <ToggleSwitch x:Name="AutoInstall" Header="Install QEMU automatically if it is missing" Toggled="AutoInstall_Toggled"/>
         <TextBox x:Name="QemuDir" Header="QEMU folder" LostFocus="QemuDir_LostFocus"/>
+        <Grid ColumnSpacing="8">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <TextBox x:Name="DisksDir" Header="Folder for new virtual disks" LostFocus="DisksDir_LostFocus"/>
+            <Button Grid.Column="1" Content="Browse…" VerticalAlignment="Bottom" Click="BrowseDisks_Click"/>
+        </Grid>
+        <TextBlock Text="Only machines created after the change use the new folder. Existing disks stay where they are." Opacity="0.6" TextWrapping="Wrap"/>
         <TextBlock x:Name="Status" Opacity="0.7"/>
         <Button Content="Download / reinstall QEMU" Click="Reinstall_Click"/>
         <TextBlock Opacity="0.6" TextWrapping="Wrap"
