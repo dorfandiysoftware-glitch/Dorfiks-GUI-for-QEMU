@@ -15,7 +15,21 @@ public sealed partial class MainWindow : Window
         try { SystemBackdrop = new MicaBackdrop(); } catch { }
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1100, 720));
         Nav.SelectedItem = Nav.MenuItems[0];
+        WhpxBar.IsOpen = !Whpx.IsAvailable();
         _ = EnsureQemuAsync();
+    }
+
+    async void WhpxButton_Click(object sender, RoutedEventArgs e)
+    {
+        WhpxButton.IsEnabled = false;
+        var ok = await Whpx.EnableAsync();
+        WhpxBar.Severity = ok ? InfoBarSeverity.Success : InfoBarSeverity.Error;
+        WhpxBar.Title = ok ? "Almost done" : "Could not enable";
+        WhpxBar.Message = ok
+            ? "Restart Windows to finish. If acceleration is still off afterwards, enable virtualization (Intel VT-x / AMD-V) in BIOS."
+            : "Administrator approval was declined or the feature is unavailable on this Windows edition.";
+        WhpxButton.Visibility = ok ? Visibility.Collapsed : Visibility.Visible;
+        WhpxButton.IsEnabled = true;
     }
 
     void Nav_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)

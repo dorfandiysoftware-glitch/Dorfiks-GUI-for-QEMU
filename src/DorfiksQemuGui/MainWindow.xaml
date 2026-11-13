@@ -6,12 +6,21 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+        <InfoBar x:Name="WhpxBar" IsOpen="False" IsClosable="True" Severity="Warning"
+                 Title="Hardware acceleration is off"
+                 Message="Virtual machines run 10-50x slower without the Windows Hypervisor Platform. Enable it and restart Windows.">
+            <InfoBar.ActionButton>
+                <Button x:Name="WhpxButton" Content="Enable" Click="WhpxButton_Click" />
+            </InfoBar.ActionButton>
+        </InfoBar>
         <InfoBar x:Name="QemuBar" Grid.Row="0" IsOpen="False" IsClosable="False" Severity="Informational"
                  Title="QEMU" Message="">
             <InfoBar.Content>
                 <ProgressBar x:Name="QemuProgress" Margin="0,0,0,12" Maximum="100" />
             </InfoBar.Content>
         </InfoBar>
+        </StackPanel>
         <NavigationView x:Name="Nav" Grid.Row="1" IsBackButtonVisible="Collapsed" PaneDisplayMode="Left"
                         IsSettingsVisible="False" SelectionChanged="Nav_SelectionChanged">
             <NavigationView.MenuItems>
