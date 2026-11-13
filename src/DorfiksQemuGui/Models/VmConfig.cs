@@ -27,5 +27,10 @@ public class VmConfig
     public bool LocalClock { get; set; }              // Windows expects local time in the RTC
     public string Group { get; set; } = "Other";
 
+    /// <summary>qemu | virtualbox | vmware</summary>
+    public string Engine { get; set; } = "qemu";
+    /// <summary>Name inside VirtualBox, or path of the .vmx for VMware.</summary>
+    public string EngineRef { get; set; } = "";
+
     public string Summary => $"{RamMb / 1024.0:0.#} GB RAM · {Cores} cores · {DiskGb} GB disk";
 }

@@ -1,5 +1,6 @@
 using DorfiksQemuGui.Models;
 using DorfiksQemuGui.Services;
+using DorfiksQemuGui.Services.Engines;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Storage.Pickers;
@@ -30,6 +31,48 @@ public sealed class VmForm
     public TextBlock RamLabel = new(), CoresLabel = new(), DiskLabel = new();
     public TextBlock Note = new() { TextWrapping = TextWrapping.Wrap, Opacity = 0.75 };
     public string OsId = "", Group = "Other";
+    public string EngineId = "qemu";
+    readonly ComboBox engineBox = new() { Header = "Virtualization engine", HorizontalAlignment = HorizontalAlignment.Stretch };
+    readonly TextBlock engineNote = new() { TextWrapping = TextWrapping.Wrap, Opacity = 0.75 };
+    readonly Button engineInstall = new() { Content = "Install" };
+
+    void RefreshEngines()
+    {
+        var keep = EngineId;
+        engineBox.Items.Clear();
+        foreach (var e in Engine.All)
+            engineBox.Items.Add(new ComboBoxItem { Content = e.Installed ? e.Name : e.Name + " (not installed)", Tag = e });
+        for (var i = 0; i < engineBox.Items.Count; i++)
+            if (((ComboBoxItem)engineBox.Items[i]).Tag is Engine en && en.Id == keep) engineBox.SelectedIndex = i;
+    }
+
+    /// <summary>Picker for QEMU / VirtualBox / VMware with an Install button when the product is missing.</summary>
+    public FrameworkElement EnginePicker(bool locked = false)
+    {
+        RefreshEngines();
+        engineBox.IsEnabled = !locked;
+        void Update()
+        {
+            if (engineBox.SelectedItem is not ComboBoxItem { Tag: Engine e }) return;
+            EngineId = e.Id;
+            engineNote.Text = e.Tagline;
+            engineInstall.Visibility = !locked && !e.Installed ? Visibility.Visible : Visibility.Collapsed;
+        }
+        engineBox.SelectionChanged += (_, _) => Update();
+        engineInstall.Click += async (_, _) =>
+        {
+            if (engineBox.SelectedItem is not ComboBoxItem { Tag: Engine e } || App.MainWindow == null) return;
+            engineInstall.IsEnabled = false;
+            await App.MainWindow.EnsureEngineAsync(e);
+            engineInstall.IsEnabled = true;
+            RefreshEngines();
+            Update();
+        };
+        Update();
+        var p = new StackPanel { Spacing = 6 };
+        p.Children.Add(engineBox); p.Children.Add(engineNote); p.Children.Add(engineInstall);
+        return p;
+    }
 
     static ComboBox Combo(string header, params string[] items)
     {
@@ -47,6 +90,9 @@ public sealed class VmForm
         Machine.SelectedItem = vm.Machine; Cpu.SelectedItem = vm.Cpu; Bus.SelectedItem = vm.DiskBus;
         Net.SelectedItem = vm.Net; Video.SelectedItem = vm.Video; Sound.SelectedItem = vm.Audio ? vm.Sound : "none";
         Extra.Text = vm.ExtraArgs; OsId = vm.OsId; Group = vm.Group;
+        // New machines: prefer VirtualBox when it is installed and QEMU has no hardware acceleration here.
+        EngineId = vm.Engine;
+        if (string.IsNullOrEmpty(vm.OsId) && !Whpx.IsAvailable() && Engine.ById("virtualbox").Installed) EngineId = "virtualbox";
         Ram.ValueChanged += (_, _) => UpdateLabels();
         Cores.ValueChanged += (_, _) => UpdateLabels();
         Disk.ValueChanged += (_, _) => UpdateLabels();
@@ -104,7 +150,7 @@ public sealed class VmForm
     public void Apply()
     {
         vm.Name = string.IsNullOrWhiteSpace(Name.Text) ? "Machine" : Name.Text.Trim();
-        vm.OsId = OsId; vm.Group = Group;
+        vm.OsId = OsId; vm.Group = Group; vm.Engine = EngineId;
         vm.Preset = Presets.ById(OsId)?.Name ?? "Custom";
         vm.RamMb = (int)Ram.Value; vm.Cores = (int)Cores.Value; vm.DiskGb = (int)Disk.Value;
         vm.IsoPath = Iso.Text.Trim();

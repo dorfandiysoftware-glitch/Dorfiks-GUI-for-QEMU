@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using DorfiksQemuGui.Models;
 using DorfiksQemuGui.Services;
+using DorfiksQemuGui.Services.Engines;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -39,10 +40,11 @@ public sealed partial class MachinesPage : Page
         Details.Children.Add(new TextBlock { Text = vm.Name, Style = (Style)Application.Current.Resources["TitleTextBlockStyle"], Margin = new Thickness(0, 8, 0, 0) });
         var disk = string.IsNullOrEmpty(vm.DiskPath) ? "created on first start" : vm.DiskPath;
         Details.Children.Add(Card("General",
-            ("Name", vm.Name), ("Operating system", vm.Preset), ("Installer ISO", string.IsNullOrWhiteSpace(vm.IsoPath) ? "— none —" : vm.IsoPath)));
+            ("Name", vm.Name), ("Operating system", vm.Preset), ("Engine", Engine.ById(vm.Engine).Name), ("Installer ISO", string.IsNullOrWhiteSpace(vm.IsoPath) ? "— none —" : vm.IsoPath)));
         Details.Children.Add(Card("System",
             ("Memory", $"{vm.RamMb} MB"), ("Processors", vm.Cores.ToString()), ("Chipset", vm.Machine),
-            ("Firmware", vm.Uefi ? "UEFI" : "BIOS"), ("Acceleration", vm.UseWhpx && Whpx.IsAvailable() ? "WHPX (hardware)" : "Software (TCG)")));
+            ("Firmware", vm.Uefi ? "UEFI" : "BIOS"),
+            ("Acceleration", vm.Engine != "qemu" ? "Provided by " + Engine.ById(vm.Engine).Name : vm.UseWhpx && Whpx.IsAvailable() ? "WHPX (hardware)" : "Software (TCG)")));
         Details.Children.Add(Card("Display", ("Graphics", vm.Video)));
         Details.Children.Add(Card("Storage", ("Disk", $"{vm.DiskGb} GB, {vm.DiskBus}"), ("File", disk)));
         Details.Children.Add(Card("Network", ("Adapter", vm.Net), ("Mode", "NAT")));
@@ -125,16 +127,11 @@ public sealed partial class MachinesPage : Page
     async void Start_Click(object sender, object e)
     {
         if (List.SelectedItem is not VmConfig vm) return;
-        var dir = QemuLocator.Find();
-        if (dir == null)
-        {
-            if (App.MainWindow == null || !await App.MainWindow.EnsureQemuAsync()) return;
-            dir = QemuLocator.Find();
-            if (dir == null) return;
-        }
+        var engine = Engine.ById(vm.Engine);
+        if (!engine.Installed && (App.MainWindow == null || !await App.MainWindow.EnsureEngineAsync(engine))) return;
         try
         {
-            await QemuLauncher.StartAsync(vm, dir);
+            await engine.StartAsync(vm);
             VmStore.Save(vms);
             ShowDetails(vm);
         }

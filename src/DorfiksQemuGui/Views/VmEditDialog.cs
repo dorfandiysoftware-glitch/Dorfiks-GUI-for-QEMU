@@ -17,7 +17,7 @@ public static class VmEditDialog
         void Tab(string title, params UIElement[] items) =>
             pivot.Items.Add(new PivotItem { Header = title, Content = new ScrollViewer { Content = VmForm.Stack(items), Padding = new Thickness(0, 8, 12, 8) } });
 
-        Tab("General", f.Name, f.IsoRow(), f.Note);
+        Tab("General", f.Name, f.EnginePicker(locked: true), f.IsoRow(), f.Note);
         Tab("System", f.RamLabel, f.Ram, f.CoresLabel, f.Cores, f.Machine, f.Cpu, f.Uefi, f.Whpx, f.Clock);
         Tab("Display", f.Video);
         Tab("Storage", f.DiskLabel, f.Disk, new TextBlock { Text = diskExists ? "The disk already exists, so its size cannot be changed here." : "The disk is created the first time you start the machine.", Opacity = 0.7, TextWrapping = TextWrapping.Wrap }, f.Bus);

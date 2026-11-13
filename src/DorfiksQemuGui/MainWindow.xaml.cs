@@ -1,4 +1,5 @@
 using DorfiksQemuGui.Services;
+using DorfiksQemuGui.Services.Engines;
 using DorfiksQemuGui.Views;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml;
@@ -55,6 +56,7 @@ public sealed partial class MainWindow : Window
     /// <summary>Finds QEMU, or downloads and installs it automatically.</summary>
     public async Task<bool> EnsureQemuAsync(bool force = false)
     {
+        QemuBar.Title = "QEMU";
         if (!force && QemuLocator.Find() != null) { QemuBar.IsOpen = false; return true; }
         if (!force && !AppSettings.Current.AutoInstallQemu)
         {
@@ -84,6 +86,35 @@ public sealed partial class MainWindow : Window
         {
             QemuBar.Severity = InfoBarSeverity.Error;
             QemuBar.Message = "QEMU install failed: " + ex.Message;
+            QemuProgress.Visibility = Visibility.Collapsed;
+            return false;
+        }
+    }
+
+    /// <summary>Installs VirtualBox / VMware (or QEMU) if it is missing, showing progress in the top bar.</summary>
+    public async Task<bool> EnsureEngineAsync(Engine e)
+    {
+        if (e.Installed) return true;
+        if (e.Id == "qemu") return await EnsureQemuAsync();
+        QemuBar.Title = e.Name;
+        QemuBar.Severity = InfoBarSeverity.Informational;
+        QemuBar.Message = "Preparing…";
+        QemuProgress.Value = 0;
+        QemuProgress.Visibility = Visibility.Visible;
+        QemuBar.IsOpen = true;
+        var progress = new Progress<(string Status, double Percent)>(p => { QemuBar.Message = p.Status; QemuProgress.Value = p.Percent; });
+        try
+        {
+            await e.InstallAsync(progress);
+            QemuBar.Severity = InfoBarSeverity.Success;
+            QemuBar.Message = e.Name + " is installed and ready.";
+            QemuProgress.Visibility = Visibility.Collapsed;
+            return e.Installed;
+        }
+        catch (Exception ex)
+        {
+            QemuBar.Severity = InfoBarSeverity.Error;
+            QemuBar.Message = e.Name + " install failed: " + ex.Message;
             QemuProgress.Visibility = Visibility.Collapsed;
             return false;
         }

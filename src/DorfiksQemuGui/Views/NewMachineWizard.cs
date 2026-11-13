@@ -35,7 +35,7 @@ public static class NewMachineWizard
         group.SelectedIndex = 0;
         var step1 = VmForm.Stack(
             new TextBlock { Text = "Pick the operating system you want to install. Dorfik's GUI fills in the right virtual hardware for it.", TextWrapping = TextWrapping.Wrap, Opacity = 0.8 },
-            f.Name, group, version, f.Note, f.IsoRow());
+            f.Name, group, version, f.Note, f.EnginePicker(), f.IsoRow());
 
         // Step 2: hardware
         var step2 = VmForm.Stack(
