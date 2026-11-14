@@ -35,21 +35,13 @@ public sealed class VmwareEngine : Engine
 
     public override async Task InstallAsync(IProgress<(string Status, double Percent)> progress, CancellationToken ct = default)
     {
-        // Broadcom hides direct download links behind a login, so use winget's package (hosted by VMware).
-        progress.Report(("Installing VMware Workstation Pro with winget… (approve the administrator prompt)", 100));
-        try
-        {
-            var (code, output) = await Run("winget.exe",
-                "install -e --id VMware.WorkstationPro --silent --accept-package-agreements --accept-source-agreements", ct: ct);
-            if (Find() != null) return;
-            throw new InvalidOperationException($"winget finished with code {code}.\n{output}");
-        }
-        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception || ex is InvalidOperationException)
-        {
-            try { Process.Start(new ProcessStartInfo(DownloadPage) { UseShellExecute = true }); } catch { }
-            throw new InvalidOperationException("Automatic install did not work (" + ex.Message.Split('\n')[0] +
-                "). The VMware download page was opened: install Workstation Pro (free for personal use) and try again.");
-        }
+        // Broadcom hides direct download links behind a login, and the winget package is stale (17.0.1),
+        // so we cannot install silently: open the official page and let the user install it.
+        await Task.CompletedTask;
+        progress.Report(("Opening the VMware download page…", 100));
+        try { Process.Start(new ProcessStartInfo(DownloadPage) { UseShellExecute = true }); } catch { }
+        throw new InvalidOperationException("VMware Workstation Pro can only be downloaded from the Broadcom site (free account, free for personal use). " +
+            "The page was opened: install it, then press Start again.");
     }
 
     static readonly Dictionary<string, string> GuestOs = new()

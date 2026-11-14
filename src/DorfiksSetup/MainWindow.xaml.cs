@@ -9,7 +9,7 @@ namespace DorfiksSetup;
 
 public sealed partial class MainWindow : Window
 {
-    const string AppName = "Dorfik's GUI for QEMU";
+    const string AppName = "Dorfiks VM GUI";
     const string ExeName = "DorfiksQemuGui.exe";
     const string UninstallKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\DorfiksQemuGui";
     static readonly string Version = (Assembly.GetExecutingAssembly()
@@ -27,7 +27,7 @@ public sealed partial class MainWindow : Window
         SetTitleBar(TitleBar);
         AppWindow.Resize(new Windows.Graphics.SizeInt32(680, 520));
         if (AppWindow.Presenter is Microsoft.UI.Windowing.OverlappedPresenter p) { p.IsResizable = false; p.IsMaximizable = false; }
-        PathBox.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "Dorfiks GUI for QEMU");
+        PathBox.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "Dorfiks VM GUI");
         Heading.Text = $"Install {AppName} {Version}";
         Closed += (_, args) => { if (installing) args.Handled = true; };
     }
@@ -38,7 +38,7 @@ public sealed partial class MainWindow : Window
         picker.FileTypeFilter.Add("*");
         WinRT.Interop.InitializeWithWindow.Initialize(picker, WinRT.Interop.WindowNative.GetWindowHandle(this));
         var f = await picker.PickSingleFolderAsync();
-        if (f != null) PathBox.Text = Path.Combine(f.Path, "Dorfiks GUI for QEMU");
+        if (f != null) PathBox.Text = Path.Combine(f.Path, "Dorfiks VM GUI");
     }
 
     void Cancel_Click(object sender, RoutedEventArgs e) => Close();
@@ -64,7 +64,7 @@ public sealed partial class MainWindow : Window
         }
         if (Process.GetProcessesByName("DorfiksQemuGui").Length > 0)
         {
-            Warn.Text = "Dorfik's GUI for QEMU is running. Close it and press Install again.";
+            Warn.Text = "Dorfiks VM GUI is running. Close it and press Install again.";
             Warn.Visibility = Visibility.Visible;
             return;
         }

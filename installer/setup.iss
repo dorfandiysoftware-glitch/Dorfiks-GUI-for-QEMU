@@ -5,7 +5,7 @@
 #endif
 [Setup]
 AppId={{6B0F7C0E-6A4B-4F0B-9C55-2B7D1D7E0A11}
-AppName=Dorfik's GUI for QEMU
+AppName=Dorfiks VM GUI
 AppVersion={#AppVersion}
 AppPublisher=Dorfik
 CreateAppDir=no

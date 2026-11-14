@@ -8,7 +8,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid x:Name="AppTitleBar" Grid.Row="0">
-            <TextBlock Text="Dorfik's GUI for QEMU" VerticalAlignment="Center" Margin="14,0,0,0" FontSize="12"/>
+            <TextBlock Text="Dorfiks VM GUI" VerticalAlignment="Center" Margin="14,0,0,0" FontSize="12"/>
         </Grid>
         <StackPanel Grid.Row="1">
         <InfoBar x:Name="WhpxBar" IsOpen="False" IsClosable="True" Severity="Warning"

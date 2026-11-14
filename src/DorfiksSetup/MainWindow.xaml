@@ -7,13 +7,13 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid x:Name="TitleBar">
-            <TextBlock Text="Dorfik's GUI for QEMU — Setup" VerticalAlignment="Center" Margin="14,0,0,0" FontSize="12"/>
+            <TextBlock Text="Dorfiks VM GUI — Setup" VerticalAlignment="Center" Margin="14,0,0,0" FontSize="12"/>
         </Grid>
         <Grid Grid.Row="1" Padding="40,16,40,32">
             <!-- Page 1: options -->
             <StackPanel x:Name="PageWelcome" Spacing="16" VerticalAlignment="Center">
                 <FontIcon Glyph="&#xE7F4;" FontSize="48" HorizontalAlignment="Left" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
-                <TextBlock x:Name="Heading" Style="{StaticResource TitleTextBlockStyle}" Text="Install Dorfik's GUI for QEMU"/>
+                <TextBlock x:Name="Heading" Style="{StaticResource TitleTextBlockStyle}" Text="Install Dorfiks VM GUI"/>
                 <TextBlock Opacity="0.75" TextWrapping="Wrap"
                            Text="A friendly way to create and run virtual machines. QEMU itself is downloaded automatically the first time you start the app."/>
                 <Grid ColumnSpacing="8">
@@ -39,7 +39,7 @@
                 <FontIcon Glyph="&#xE73E;" FontSize="48" HorizontalAlignment="Left" Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
                 <TextBlock x:Name="DoneText" Style="{StaticResource TitleTextBlockStyle}" Text="All set"/>
                 <TextBlock x:Name="DoneSub" Opacity="0.75" TextWrapping="Wrap"/>
-                <CheckBox x:Name="LaunchBox" Content="Launch Dorfik's GUI for QEMU" IsChecked="True"/>
+                <CheckBox x:Name="LaunchBox" Content="Launch Dorfiks VM GUI" IsChecked="True"/>
                 <Button Content="Finish" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Right" Click="Finish_Click"/>
             </StackPanel>
         </Grid>

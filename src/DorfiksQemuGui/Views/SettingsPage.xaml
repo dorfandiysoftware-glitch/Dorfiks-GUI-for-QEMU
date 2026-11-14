@@ -14,6 +14,6 @@
         <TextBlock x:Name="Status" Opacity="0.7"/>
         <Button Content="Download / reinstall QEMU" Click="Reinstall_Click"/>
         <TextBlock Opacity="0.6" TextWrapping="Wrap"
-                   Text="Dorfik's GUI for QEMU is a front-end for QEMU (GPL-2.0). QEMU is downloaded from the official Windows builds at qemu.weilnetz.de."/>
+                   Text="Dorfiks VM GUI is a front-end for QEMU (GPL-2.0), VirtualBox and VMware Workstation. QEMU is downloaded from the official Windows builds at qemu.weilnetz.de."/>
     </StackPanel>
 </Page>

@@ -28,7 +28,7 @@ public sealed partial class MachinesPage : Page
         Details.Children.Clear();
         if (vm == null)
         {
-            Details.Children.Add(new TextBlock { Text = "Welcome to Dorfik's GUI for QEMU", Style = (Style)Application.Current.Resources["TitleTextBlockStyle"], Margin = new Thickness(0, 24, 0, 0) });
+            Details.Children.Add(new TextBlock { Text = "Welcome to Dorfiks VM GUI", Style = (Style)Application.Current.Resources["TitleTextBlockStyle"], Margin = new Thickness(0, 24, 0, 0) });
             Details.Children.Add(new TextBlock
             {
                 Text = "Your virtual machines live in the list on the left. There is none yet, so press “New” to create the first one: " +

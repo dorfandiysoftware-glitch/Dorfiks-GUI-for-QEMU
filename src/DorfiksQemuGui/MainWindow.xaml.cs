@@ -12,7 +12,7 @@ public sealed partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        Title = "Dorfik's GUI for QEMU";
+        Title = "Dorfiks VM GUI";
         try { SystemBackdrop = new MicaBackdrop(); } catch { }
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(AppTitleBar);
